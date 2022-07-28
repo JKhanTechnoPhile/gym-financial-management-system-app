@@ -1,4 +1,4 @@
-package com.hiddu.gym.enterprise.entities;
+package com.hiddu.gym.enterprise.enums.converters;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

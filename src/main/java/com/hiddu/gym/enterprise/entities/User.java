@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.hiddu.gym.enterprise.enums.UserEnum;
+import com.hiddu.gym.enterprise.enums.converters.UserEnumJpaConverter;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
