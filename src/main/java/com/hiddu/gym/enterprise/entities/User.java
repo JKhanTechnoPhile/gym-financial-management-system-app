@@ -38,6 +38,15 @@ public class User {
 	@Column(name = "password", nullable = false, length = 50)
 	private String password;
 	
+	@Column(name = "gym_code", nullable = true, length = 100)
+	private String gymCode;
+	
+	@Column(name = "user_id_type", nullable = true)
+	private String userIdType;
+	
+	@Column(name = "user_id_proof", nullable = true)
+	private String userIdProof;
+	
 	@Convert(converter = UserEnumJpaConverter.class)
 	@Column(name = "user_type", nullable = false)
 	private UserEnum userType;

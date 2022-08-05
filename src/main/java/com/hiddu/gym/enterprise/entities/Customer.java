@@ -55,4 +55,8 @@ public class Customer {
 	@Convert(converter = CustomerLifeCycleEnumJpaConverter.class)
 	@Column(name = "customer_status", nullable = false)
 	private CustomerLifeCycleEnum customerStatus;
+	
+	private GymBranch gymBranch;
+	
+	private GymPlan gymPlan;
 }
