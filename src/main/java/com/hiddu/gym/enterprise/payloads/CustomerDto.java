@@ -2,6 +2,7 @@ package com.hiddu.gym.enterprise.payloads;
 
 import java.util.Date;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -26,23 +27,24 @@ public class CustomerDto {
 	
 	@NotEmpty
 	@Size(max = 15, message = "Password must be min of 3 characters and max of 15 characters !!")
-	@Pattern(regexp = "^+(91)[0-9]{0,14}$", message = "Invalid phone number !!")
+	@Pattern(regexp = "^[0-9]{10}$", message = "Invalid phone number !!")
 	private String customerPhoneNumber;
 	
-//	@Email(message = "Email address is not valid !!")
-//	@Size(min = 0, max = 100, message = "Email address is not valid !!")
+	@Email(message = "Email address is not valid !!")
+	@Size(min = 0, max = 100, message = "Email address is not valid !!")
 	private String customerEmailId;
 	
 	private String customerIdType;
 	
 	private String customerIdProof;
 	
-	@NotEmpty
 	private Date customerEnquiredDate;
 	
 	private Date customerRegisteredDate;
 	
 	private Date customerPlanActivatedDate;
+	
+	private String gymBranchCode;
 	
 	@NotNull
 	private CustomerLifeCycleEnum customerStatus;

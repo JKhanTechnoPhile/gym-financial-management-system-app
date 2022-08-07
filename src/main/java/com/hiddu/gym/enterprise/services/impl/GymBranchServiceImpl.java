@@ -56,9 +56,9 @@ public class GymBranchServiceImpl implements GymBranchService {
 	}
 
 	@Override
-	public GymBranchDto updateGymBranch(GymBranchDto gymBranchDto, String gymCode) {
-		GymBranch gymBranch = this.gymBranchRepo.findById(gymCode)
-				.orElseThrow(()-> new ResourceNotFoundException("GymBranch","gymCode", gymCode));
+	public GymBranchDto updateGymBranch(GymBranchDto gymBranchDto, Integer gymId) {
+		GymBranch gymBranch = this.gymBranchRepo.findById(gymId)
+				.orElseThrow(()-> new ResourceNotFoundException("GymBranch","gymId", gymId));
 
 		gymBranch.setGymName(gymBranchDto.getGymName());
 		gymBranch.setGymContact(gymBranchDto.getGymContact());
@@ -73,9 +73,9 @@ public class GymBranchServiceImpl implements GymBranchService {
 	}
 
 	@Override
-	public GymBranchDto getGymBranchById(String gymCode) {
-		GymBranch gymBranch = this.gymBranchRepo.findById(gymCode)
-				.orElseThrow(()-> new ResourceNotFoundException("GymBranch","gymCode", gymCode));
+	public GymBranchDto getGymBranchById(Integer gymId) {
+		GymBranch gymBranch = this.gymBranchRepo.findById(gymId)
+				.orElseThrow(()-> new ResourceNotFoundException("GymBranch","gymId", gymId));
 		GymBranchDto gymBranchDto = this.gymBranchToDto(gymBranch);
 		return gymBranchDto;
 	}
@@ -88,9 +88,9 @@ public class GymBranchServiceImpl implements GymBranchService {
 	}
 
 	@Override
-	public void deleteGymBranch(String gymCode) {
-		GymBranch gymBranch = this.gymBranchRepo.findById(gymCode)
-				.orElseThrow(()-> new ResourceNotFoundException("GymBranch","gymCode", gymCode));
+	public void deleteGymBranch(Integer gymId) {
+		GymBranch gymBranch = this.gymBranchRepo.findById(gymId)
+				.orElseThrow(()-> new ResourceNotFoundException("GymBranch","gymId", gymId));
 		this.gymBranchRepo.delete(gymBranch);
 	}
 

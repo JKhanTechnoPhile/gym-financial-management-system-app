@@ -8,11 +8,11 @@ public interface GymBranchService {
 
 	GymBranchDto createGymBranch(GymBranchDto gymBranch);
 	
-	GymBranchDto updateGymBranch(GymBranchDto gymBranch, String gymCode);
+	GymBranchDto updateGymBranch(GymBranchDto gymBranch, Integer gymId);
 	
-	GymBranchDto getGymBranchById(String gymCode);
+	GymBranchDto getGymBranchById(Integer gymId);
 	
 	List<GymBranchDto> getAllGymBranches();
 	
-	void deleteGymBranch(String gymCode);
+	void deleteGymBranch(Integer gymId);
 }

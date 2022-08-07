@@ -1,5 +1,6 @@
 package com.hiddu.gym.enterprise.services.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,9 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.hiddu.gym.enterprise.entities.Customer;
+import com.hiddu.gym.enterprise.entities.GymBranch;
+import com.hiddu.gym.enterprise.entities.User;
 import com.hiddu.gym.enterprise.execptions.ResourceNotFoundException;
 import com.hiddu.gym.enterprise.payloads.CustomerDto;
+import com.hiddu.gym.enterprise.payloads.UserDto;
 import com.hiddu.gym.enterprise.repositories.CustomerRepo;
+import com.hiddu.gym.enterprise.repositories.GymBranchRepo;
 import com.hiddu.gym.enterprise.services.CustomerService;
 
 @Service
@@ -23,9 +28,28 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Autowired
+	private GymBranchRepo gymBranchRepo;
+	
 	@Override
 	public CustomerDto createCustomer(CustomerDto customerDto) {
+		
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(customerDto.getGymBranchCode());
+		if(gymBranch == null)
+			throw new ResourceNotFoundException("GymBranch", "gymCode", customerDto.getGymBranchCode());
+		
 		Customer customer = this.dtoToCustomer(customerDto);
+		customer.setGymBranch(gymBranch);
+		
+		switch (customer.getCustomerStatus()) {
+		case CUSTOMER_ENQUIRED: {
+			customer.setCustomerEnquiredDate(new Date());
+			break;
+		}
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + customer.getCustomerStatus());
+		}
+		
 		Customer savedCustomerr = this.customerRepo.save(customer);
 		return this.CustomerToDto(savedCustomerr);
 	}
@@ -87,6 +111,18 @@ public class CustomerServiceImpl implements CustomerService {
 		Customer customer = this.customerRepo.findById(customerId)
 				.orElseThrow(()-> new ResourceNotFoundException("Customer","id", customerId));
 		this.customerRepo.delete(customer);
+	}
+	
+	@Override
+	public List<CustomerDto> geCustomersByGymBranch(Integer gymBranchId) {
+		
+		GymBranch gymBranch = gymBranchRepo.findById(gymBranchId)
+				.orElseThrow(()-> new ResourceNotFoundException("Gym Branch","id", gymBranchId));;
+		
+		List<Customer> customers = this.customerRepo.findByGymBranch(gymBranch);
+		List<CustomerDto> customersDtos = customers.stream().map(customer -> this.CustomerToDto(customer)).collect(Collectors.toList());
+		
+		return customersDtos;
 	}
 	
 	private Customer dtoToCustomer(CustomerDto customerDto) {

@@ -29,7 +29,7 @@ public class GymPlan {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer gymPlanId;
+	private Integer id;
 	
 	@Column(name = "gym_plan_name")
 	private String gymPlanName;

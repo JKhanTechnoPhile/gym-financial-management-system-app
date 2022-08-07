@@ -6,7 +6,7 @@ import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import com.hiddu.gym.enterprise.entities.Customer;
+import com.hiddu.gym.enterprise.entities.User;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,10 +24,10 @@ public class GymBranchDto {
 	private String gymName;
 	
 	@NotEmpty
-	private Float gymLocationLat;
+	private String gymLocationLat;
 	
 	@NotEmpty
-	private Float gymLocationLong;
+	private String gymLocationLong;
 	
 	@NotEmpty
 	private String gymFullAddress;
@@ -35,8 +35,7 @@ public class GymBranchDto {
 	@NotEmpty
 	private String gymContact;
 	
-	@NotEmpty
 	private String gymCode;
 	
-	private List<Customer> customers = new ArrayList<>();
+	private List<User> users = new ArrayList<>();
 }

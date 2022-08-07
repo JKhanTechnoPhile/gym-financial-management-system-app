@@ -61,4 +61,9 @@ public class UserController {
 		return ResponseEntity.ok(this.userService.getUserById(userId));
 	}
 	
+	@GetMapping("/{gymCode}")
+	public ResponseEntity<List<UserDto>> getAllUsersByGymCode(@PathVariable("gymCode") String gymCode) {
+		return ResponseEntity.ok(this.userService.getUsersByGymBranch(gymCode));
+	}
+	
 }

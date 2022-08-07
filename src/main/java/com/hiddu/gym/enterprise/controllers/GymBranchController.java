@@ -34,13 +34,13 @@ public class GymBranchController {
 	}
 
 	@PutMapping("/{gymCode}")
-	public ResponseEntity<GymBranchDto> updateGymBranch(@Valid @RequestBody GymBranchDto gymBranchDto, @PathVariable("gymCode") String uId) {
-		GymBranchDto updatedGymBranchDto = this.gymBranchService.updateGymBranch(gymBranchDto, uId);
+	public ResponseEntity<GymBranchDto> updateGymBranch(@Valid @RequestBody GymBranchDto gymBranchDto, @PathVariable("gymCode") Integer gymCode) {
+		GymBranchDto updatedGymBranchDto = this.gymBranchService.updateGymBranch(gymBranchDto, gymCode);
 		return ResponseEntity.ok(updatedGymBranchDto);
 	}
 
 	@DeleteMapping("/{gymCode}")
-	public ResponseEntity<ApiResponse> deleteGymBranch(@PathVariable String gymCode) {
+	public ResponseEntity<ApiResponse> deleteGymBranch(@PathVariable Integer gymCode) {
 		this.gymBranchService.deleteGymBranch(gymCode);
 		return ResponseEntity.ok(new ApiResponse("Gym branch deleted successfully", true));
 	}
@@ -51,7 +51,7 @@ public class GymBranchController {
 	}
 
 	@GetMapping("/{gymCode}")
-	public ResponseEntity<GymBranchDto> getGymBranch(@PathVariable String gymCode) {
+	public ResponseEntity<GymBranchDto> getGymBranch(@PathVariable Integer gymCode) {
 		return ResponseEntity.ok(this.gymBranchService.getGymBranchById(gymCode));
 	}
 
