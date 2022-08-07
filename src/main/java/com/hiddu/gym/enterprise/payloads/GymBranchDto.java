@@ -36,6 +36,4 @@ public class GymBranchDto {
 	private String gymContact;
 	
 	private String gymCode;
-	
-	private List<User> users = new ArrayList<>();
 }

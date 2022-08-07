@@ -7,6 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.hiddu.gym.enterprise.entities.GymBranch;
 import com.hiddu.gym.enterprise.enums.UserEnum;
 import com.hiddu.gym.enterprise.enums.UserIdTypeEnum;
 
@@ -48,4 +49,6 @@ public class UserDto {
 	
 	@NotEmpty
 	private String gymBranchCode;
+	
+	private GymBranchDto gymBranch;
 }

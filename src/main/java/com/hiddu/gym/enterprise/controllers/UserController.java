@@ -56,10 +56,10 @@ public class UserController {
 		return ResponseEntity.ok(this.userService.getAllUsers());
 	}
 	
-	@GetMapping("/{userId}")
-	public ResponseEntity<UserDto> getUser(@PathVariable Integer userId) {
-		return ResponseEntity.ok(this.userService.getUserById(userId));
-	}
+//	@GetMapping("/{userId}")
+//	public ResponseEntity<UserDto> getUser(@PathVariable Integer userId) {
+//		return ResponseEntity.ok(this.userService.getUserById(userId));
+//	}
 	
 	@GetMapping("/{gymCode}")
 	public ResponseEntity<List<UserDto>> getAllUsersByGymCode(@PathVariable("gymCode") String gymCode) {
