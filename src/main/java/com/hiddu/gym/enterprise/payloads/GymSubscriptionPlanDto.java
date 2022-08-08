@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 public class GymSubscriptionPlanDto {
 	
-	private Integer gymSubscriptionPlanId;
+	private Integer id;
 	
 	@NotEmpty
 	@Size(min = 4, message = "Gym subscription plan name must be min of 4 characters !!")
