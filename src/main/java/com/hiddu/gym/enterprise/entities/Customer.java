@@ -61,5 +61,5 @@ public class Customer {
 	private GymBranch gymBranch;
 	
 	@ManyToOne
-	private GymPlan gymPlan;
+	private GymSubscriptionPlan gymPlan;
 }

@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -49,5 +50,8 @@ public class GymBranch {
 	
 	@OneToMany(mappedBy = "gymBranch", fetch = FetchType.LAZY)
 	private List<User> users = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "gymBranch", fetch = FetchType.LAZY)
+	private List<GymSubscriptionPlan> gymSubscriptionPlan = new ArrayList<>();
 
 }

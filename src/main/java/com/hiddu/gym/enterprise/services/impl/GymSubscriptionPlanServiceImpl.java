@@ -1,0 +1,106 @@
+package com.hiddu.gym.enterprise.services.impl;
+
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hiddu.gym.enterprise.entities.GymBranch;
+import com.hiddu.gym.enterprise.entities.GymSubscriptionPlan;
+import com.hiddu.gym.enterprise.execptions.ResourceNotFoundException;
+import com.hiddu.gym.enterprise.payloads.GymSubscriptionPlanDto;
+import com.hiddu.gym.enterprise.repositories.GymBranchRepo;
+import com.hiddu.gym.enterprise.repositories.GymSubscriptionPlanRepo;
+import com.hiddu.gym.enterprise.services.GymSubscriptionPlanService;
+
+@Service
+public class GymSubscriptionPlanServiceImpl implements GymSubscriptionPlanService {
+	
+	@Autowired
+	private GymBranchRepo gymBranchRepo;
+
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	@Autowired
+	private GymSubscriptionPlanRepo gymSubscriptionPlanRepo;
+
+	@Override
+	public GymSubscriptionPlanDto createGymSubscriptionPlan(GymSubscriptionPlanDto gymSubscriptionPlanDto) {
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(gymSubscriptionPlanDto.getGymBranchCode());
+		if(gymBranch == null)
+			throw new ResourceNotFoundException("GymBranch", "gymCode", gymSubscriptionPlanDto.getGymBranchCode());
+		
+		GymSubscriptionPlan gymSubscriptionPlan = this.dtoToGymSubscriptionPlan(gymSubscriptionPlanDto);
+		gymSubscriptionPlan.setGymPlanCreatedDate(new Date());
+		gymSubscriptionPlan.setGymBranch(gymBranch);
+		GymSubscriptionPlan savedGymSubscriptionPlan = this.gymSubscriptionPlanRepo.save(gymSubscriptionPlan);
+		return this.gymSubscriptionPlanToDto(savedGymSubscriptionPlan);
+	}
+
+	@Override
+	public GymSubscriptionPlanDto updateGymSubscriptionPlan(GymSubscriptionPlanDto gymSubscriptionPlanDto, Integer gymSubscriptionPlanId) {
+		
+		GymSubscriptionPlan gymSubscriptionPlan = this.gymSubscriptionPlanRepo.findById(gymSubscriptionPlanId)
+				.orElseThrow(()-> new ResourceNotFoundException("GymSubscriptionPlanId","id", gymSubscriptionPlanId));
+		
+		gymSubscriptionPlan.setGymPlanName(gymSubscriptionPlanDto.getGymPlanName());
+		gymSubscriptionPlan.setGymPlanEditedDate(new Date());
+		
+		GymSubscriptionPlan updatedGymSubscriptionPlan = this.gymSubscriptionPlanRepo.save(gymSubscriptionPlan);
+		GymSubscriptionPlanDto updatedGymSubscriptionPlanDto = this.gymSubscriptionPlanToDto(updatedGymSubscriptionPlan);
+		return updatedGymSubscriptionPlanDto;
+	}
+
+	@Override
+	public GymSubscriptionPlanDto getGymSubscriptionPlanById(Integer gymSubscriptionPlanId) {
+		
+		GymSubscriptionPlan gymSubscriptionPlan = this.gymSubscriptionPlanRepo.findById(gymSubscriptionPlanId)
+				.orElseThrow(()-> new ResourceNotFoundException("GymSubscriptionPlanId","id", gymSubscriptionPlanId));
+		
+		GymSubscriptionPlanDto gymSubscriptionPlanDto = this.gymSubscriptionPlanToDto(gymSubscriptionPlan);
+		
+		return gymSubscriptionPlanDto;
+	}
+
+	@Override
+	public List<GymSubscriptionPlanDto> getAllGymSubscriptionPlans() {
+		List<GymSubscriptionPlan> gymSubscriptionPlans = this.gymSubscriptionPlanRepo.findAll();
+		List<GymSubscriptionPlanDto> gymSubscriptionPlanDtos = gymSubscriptionPlans.stream().map(gymSubscriptionPlan -> this.gymSubscriptionPlanToDto(gymSubscriptionPlan)).collect(Collectors.toList());
+		return gymSubscriptionPlanDtos;
+	}
+	
+	@Override
+	public List<GymSubscriptionPlanDto> getGymSubscriptionPlansByBranch(String gymCode) {
+		
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(gymCode);
+		if(gymBranch == null)
+			throw new ResourceNotFoundException("Gym Branch","gymCode", gymCode);
+		
+		List<GymSubscriptionPlan> gymSubscriptionPlans = this.gymSubscriptionPlanRepo.findByGymBranch(gymBranch);
+		List<GymSubscriptionPlanDto> gymSubscriptionPlanDtos = gymSubscriptionPlans.stream().map(gymSubscriptionPlan -> this.gymSubscriptionPlanToDto(gymSubscriptionPlan)).collect(Collectors.toList());
+		return gymSubscriptionPlanDtos;
+	}
+
+	@Override
+	public void deleteGymSubscriptionPlan(Integer gymSubscriptionPlanId) {
+		GymSubscriptionPlan gymSubscriptionPlan = this.gymSubscriptionPlanRepo.findById(gymSubscriptionPlanId)
+				.orElseThrow(()-> new ResourceNotFoundException("GymSubscriptionPlanId","id", gymSubscriptionPlanId));
+		this.gymSubscriptionPlanRepo.delete(gymSubscriptionPlan);
+
+	}
+	
+	private GymSubscriptionPlan dtoToGymSubscriptionPlan(GymSubscriptionPlanDto gymSubscriptionPlanDto) {
+		GymSubscriptionPlan gymSubscriptionPlan = this.modelMapper.map(gymSubscriptionPlanDto, GymSubscriptionPlan.class);
+		return gymSubscriptionPlan;
+	}
+	
+	private GymSubscriptionPlanDto gymSubscriptionPlanToDto(GymSubscriptionPlan gymSubscriptionPlan) {
+		GymSubscriptionPlanDto gymSubscriptionPlanDto = this.modelMapper.map(gymSubscriptionPlan, GymSubscriptionPlanDto.class);
+		return gymSubscriptionPlanDto;
+	}
+
+}

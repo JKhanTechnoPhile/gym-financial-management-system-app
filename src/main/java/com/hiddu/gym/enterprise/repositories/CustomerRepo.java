@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hiddu.gym.enterprise.entities.Customer;
 import com.hiddu.gym.enterprise.entities.GymBranch;
-import com.hiddu.gym.enterprise.entities.GymPlan;
+import com.hiddu.gym.enterprise.entities.GymSubscriptionPlan;
 
 public interface CustomerRepo extends JpaRepository<Customer, Integer>{
 
 	List<Customer> findByGymBranch(GymBranch gymBranch);
 	
-	List<Customer> findByGymPlan(GymPlan gymPlan);
+	List<Customer> findByGymPlan(GymSubscriptionPlan gymPlan);
 }

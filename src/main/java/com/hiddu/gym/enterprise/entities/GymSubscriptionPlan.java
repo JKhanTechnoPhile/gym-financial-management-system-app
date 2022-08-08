@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -21,33 +23,40 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="gymplans")
+@Table(name="gymSubscriptionPlans")
 @NoArgsConstructor
 @Getter
 @Setter
-public class GymPlan {
+public class GymSubscriptionPlan {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
-	@Column(name = "gym_plan_name")
+	@Column(name = "gym_plan_name", nullable = false)
 	private String gymPlanName;
 	
 	@Convert(converter = GymPlanFrequencyEnumJpaConverter.class)
 	@Column(name = "gym_plan_frequency", nullable = false)
 	private GymPlanFrequencyEnum gymPlanFrequency;
 	
-	@Column(name = "gym_plan_base_fare")
+	@Column(name = "gym_plan_base_fare", nullable = false)
 	private Float gymPlanBaseFare;
 	
-	@Column(name = "gym_plan_created_date")
+	@Column(name = "gym_plan_created_date", nullable = false)
 	private Date gymPlanCreatedDate;
 	
-	@Column(name = "gym_plan_end_date")
+	@Column(name = "gym_plan_end_date", nullable = true)
 	private Date gymPlanEndDate;
+	
+	@Column(name = "gym_plan_last_edited_date", nullable = true)
+	private Date gymPlanEditedDate;
 	
 	@OneToMany(mappedBy = "gymPlan")
 	private List<Customer> customers = new ArrayList<>();
+	
+	@ManyToOne
+	@JoinColumn(name = "gym_branch_id")
+	private GymBranch gymBranch;
 
 }

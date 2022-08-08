@@ -11,10 +11,8 @@ import org.springframework.util.StringUtils;
 
 import com.hiddu.gym.enterprise.entities.Customer;
 import com.hiddu.gym.enterprise.entities.GymBranch;
-import com.hiddu.gym.enterprise.entities.User;
 import com.hiddu.gym.enterprise.execptions.ResourceNotFoundException;
 import com.hiddu.gym.enterprise.payloads.CustomerDto;
-import com.hiddu.gym.enterprise.payloads.UserDto;
 import com.hiddu.gym.enterprise.repositories.CustomerRepo;
 import com.hiddu.gym.enterprise.repositories.GymBranchRepo;
 import com.hiddu.gym.enterprise.services.CustomerService;

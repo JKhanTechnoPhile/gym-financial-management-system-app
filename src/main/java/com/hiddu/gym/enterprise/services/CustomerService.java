@@ -3,7 +3,6 @@ package com.hiddu.gym.enterprise.services;
 import java.util.List;
 
 import com.hiddu.gym.enterprise.payloads.CustomerDto;
-import com.hiddu.gym.enterprise.payloads.UserDto;
 
 public interface CustomerService {
 
