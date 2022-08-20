@@ -8,6 +8,9 @@ import javax.validation.ValidationException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -16,6 +19,7 @@ import com.hiddu.gym.enterprise.entities.GymBranch;
 import com.hiddu.gym.enterprise.entities.GymSubscriptionPlan;
 import com.hiddu.gym.enterprise.execptions.ResourceNotFoundException;
 import com.hiddu.gym.enterprise.payloads.CustomerDto;
+import com.hiddu.gym.enterprise.payloads.CustomerResponse;
 import com.hiddu.gym.enterprise.repositories.CustomerRepo;
 import com.hiddu.gym.enterprise.repositories.GymBranchRepo;
 import com.hiddu.gym.enterprise.repositories.GymSubscriptionPlanRepo;
@@ -132,6 +136,30 @@ public class CustomerServiceImpl implements CustomerService {
 		
 		return customersDtos;
 	}
+	
+	@Override
+	public CustomerResponse getAllCustomersByPagination(Integer pageNumber, Integer pageSize) {
+		
+		Pageable p = PageRequest.of(pageNumber, pageSize);
+		
+		Page<Customer> pagedCustomers = this.customerRepo.findAll(p);
+		
+		List<Customer> customers = pagedCustomers.getContent();
+		
+		List<CustomerDto> customersDtos = customers.stream().map(customer -> this.CustomerToDto(customer)).collect(Collectors.toList());
+		
+		CustomerResponse customerResponse = new CustomerResponse();
+		customerResponse.setContent(customersDtos);
+		customerResponse.setPageNumber(pagedCustomers.getNumber());
+		customerResponse.setPageSize(pagedCustomers.getSize());
+		customerResponse.setTotalElements(pagedCustomers.getTotalElements());
+		customerResponse.setTotalPages(pagedCustomers.getTotalPages());
+		customerResponse.setLastPage(pagedCustomers.isLast());
+		
+		
+		return customerResponse;
+	}
+	
 
 	@Override
 	public void deleteCustomer(Integer customerId) {

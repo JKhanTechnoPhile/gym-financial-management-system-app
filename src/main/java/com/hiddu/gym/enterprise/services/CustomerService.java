@@ -3,6 +3,7 @@ package com.hiddu.gym.enterprise.services;
 import java.util.List;
 
 import com.hiddu.gym.enterprise.payloads.CustomerDto;
+import com.hiddu.gym.enterprise.payloads.CustomerResponse;
 
 public interface CustomerService {
 
@@ -13,6 +14,8 @@ public interface CustomerService {
 	CustomerDto getCustomerById(Integer customerId);
 	
 	List<CustomerDto> getAllCustomers();
+	
+	CustomerResponse getAllCustomersByPagination(Integer pageNumber, Integer pageSize);
 	
 	void deleteCustomer(Integer customerId);
 	

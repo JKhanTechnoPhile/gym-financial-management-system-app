@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hiddu.gym.enterprise.payloads.ApiResponse;
 import com.hiddu.gym.enterprise.payloads.CustomerDto;
+import com.hiddu.gym.enterprise.payloads.CustomerResponse;
 import com.hiddu.gym.enterprise.services.CustomerService;
 
 @RestController
@@ -51,6 +53,15 @@ public class CustomerController {
 	@GetMapping("/")
 	public ResponseEntity<List<CustomerDto>> getAllCustomers() {
 		return ResponseEntity.ok(this.customerService.getAllCustomers());
+	}
+	
+	//GET-customer by pagination (PageNumber starts with zero)
+	@GetMapping("/pagination")
+	public ResponseEntity<CustomerResponse> getAllCustomersByPagination(
+			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize
+			) {
+		return ResponseEntity.ok(this.customerService.getAllCustomersByPagination(pageNumber, pageSize));
 	}
 	
 	@GetMapping("/{customerId}")
