@@ -190,6 +190,13 @@ public class CustomerServiceImpl implements CustomerService {
 		return customersDtos;
 	}
 	
+	@Override
+	public List<CustomerDto> searchCustomers(String keyword) {
+		List<Customer> customers = this.customerRepo.searchByCustomerName(keyword);
+		List<CustomerDto> customersDto = customers.stream().map(customer -> this.CustomerToDto(customer)).collect(Collectors.toList());
+		return customersDto;
+	}
+	
 	private Customer dtoToCustomer(CustomerDto customerDto) {
 		Customer customer = this.modelMapper.map(customerDto, Customer.class);
 		return customer;

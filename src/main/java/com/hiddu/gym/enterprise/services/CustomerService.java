@@ -20,4 +20,6 @@ public interface CustomerService {
 	void deleteCustomer(Integer customerId);
 	
 	List<CustomerDto> geCustomersByGymBranch(Integer gymBranchId);
+	
+	List<CustomerDto> searchCustomers(String keyword);
 }

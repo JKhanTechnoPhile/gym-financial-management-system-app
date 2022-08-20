@@ -71,4 +71,13 @@ public class CustomerController {
 		return ResponseEntity.ok(this.customerService.getCustomerById(customerId));
 	}
 	
+	//Search
+	@GetMapping("/search/{keywords}")
+	public ResponseEntity<List<CustomerDto>> getAllCustomersBySearch(
+			@PathVariable("keywords") String keywords
+			) {
+		return ResponseEntity.ok(this.customerService.searchCustomers(keywords));
+		
+	}
+	
 }
