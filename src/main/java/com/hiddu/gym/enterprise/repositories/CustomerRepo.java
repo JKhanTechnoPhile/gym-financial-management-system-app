@@ -16,7 +16,7 @@ public interface CustomerRepo extends JpaRepository<Customer, Integer>{
 	
 	List<Customer> findByGymPlan(GymSubscriptionPlan gymPlan);
 	
-//	List<Customer> findByCustomerNameContaining(String customerName);
+//	List<Customer> searchByCustomerName(String customerName);
 	
 	@Query("select c from Customer c where c.customerName like :key")
 	List<Customer> searchByCustomerName(@Param("key") String customerName);

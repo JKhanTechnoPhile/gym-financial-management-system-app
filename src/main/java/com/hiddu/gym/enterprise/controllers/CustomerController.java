@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hiddu.gym.enterprise.config.AppConstants;
 import com.hiddu.gym.enterprise.payloads.ApiResponse;
 import com.hiddu.gym.enterprise.payloads.CustomerDto;
 import com.hiddu.gym.enterprise.payloads.CustomerResponse;
@@ -58,8 +59,8 @@ public class CustomerController {
 	//GET-customer by pagination (PageNumber starts with zero)
 	@GetMapping("/pagination")
 	public ResponseEntity<CustomerResponse> getAllCustomersByPagination(
-			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+			@RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
 			@RequestParam(value = "sortBy", defaultValue = "customerName", required = false) String sortBy,
 			@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
 			) {
