@@ -46,7 +46,13 @@ public class CustomerDto {
 	
 	private String gymBranchCode;
 	
+	private Integer gymSubscriptionPlanCode;
+	
 	@NotNull
 	private CustomerLifeCycleEnum customerStatus;
+	
+	private GymBranchDto gymBranch;
+	
+	private GymSubscriptionPlanDto gymSubscriptionPlan;
 
 }

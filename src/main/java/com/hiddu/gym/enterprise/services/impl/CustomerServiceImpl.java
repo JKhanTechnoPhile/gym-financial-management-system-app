@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.ValidationException;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,10 +13,12 @@ import org.springframework.util.StringUtils;
 
 import com.hiddu.gym.enterprise.entities.Customer;
 import com.hiddu.gym.enterprise.entities.GymBranch;
+import com.hiddu.gym.enterprise.entities.GymSubscriptionPlan;
 import com.hiddu.gym.enterprise.execptions.ResourceNotFoundException;
 import com.hiddu.gym.enterprise.payloads.CustomerDto;
 import com.hiddu.gym.enterprise.repositories.CustomerRepo;
 import com.hiddu.gym.enterprise.repositories.GymBranchRepo;
+import com.hiddu.gym.enterprise.repositories.GymSubscriptionPlanRepo;
 import com.hiddu.gym.enterprise.services.CustomerService;
 
 @Service
@@ -28,6 +32,9 @@ public class CustomerServiceImpl implements CustomerService {
 	
 	@Autowired
 	private GymBranchRepo gymBranchRepo;
+	
+	@Autowired
+	private GymSubscriptionPlanRepo gymSubscriptionPlanRepo;
 	
 	@Override
 	public CustomerDto createCustomer(CustomerDto customerDto) {
@@ -57,6 +64,11 @@ public class CustomerServiceImpl implements CustomerService {
 		Customer customer = this.customerRepo.findById(customerId)
 				.orElseThrow(()-> new ResourceNotFoundException("Customer","id", customerId));
 		
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(customerDto.getGymBranchCode());
+		if(gymBranch == null)
+			throw new ResourceNotFoundException("GymBranch", "gymCode", customerDto.getGymBranchCode());
+		
+		customer.setGymBranch(gymBranch);
 		customer.setCustomerName(customerDto.getCustomerName());
 		customer.setCustomerPhoneNumber(customerDto.getCustomerPhoneNumber());
 		customer.setCustomerEnquiredDate(customerDto.getCustomerEnquiredDate());
@@ -66,21 +78,38 @@ public class CustomerServiceImpl implements CustomerService {
 			customer.setCustomerEmailId(customerDto.getCustomerEmailId());
 		}
 		
-		if(StringUtils.hasLength(customerDto.getCustomerIdType())) {
-			customer.setCustomerIdType(customerDto.getCustomerIdType());
-		}
-		
-		if(StringUtils.hasLength(customerDto.getCustomerIdProof())) {
+		switch (customer.getCustomerStatus()) {
+		case CUSTOMER_REGISTERED: {
+			
+			if(!StringUtils.hasLength(customerDto.getCustomerIdType()) && !StringUtils.hasLength(customerDto.getCustomerIdProof())) {
+				throw new ValidationException("Customer Id Proof could not be empty - Customer Id / Proof");
+			}
+			
+			customer.setCustomerIdType(customerDto.getCustomerIdType());			
 			customer.setCustomerIdProof(customerDto.getCustomerIdProof());
+			customer.setCustomerRegisteredDate(new Date());
+			break;
+		}
+		case CUSTOMER_PLAN_ACTIVE: {
+			GymSubscriptionPlan gymSubscriptionPlan = gymSubscriptionPlanRepo.findById(customerDto.getGymSubscriptionPlanCode())
+					.orElseThrow(()-> new ResourceNotFoundException("GymSubscriptionPlan","id", customerDto.getGymSubscriptionPlanCode()));
+			
+			customer.setCustomerPlanActivatedDate(new Date());
+			customer.setGymPlan(gymSubscriptionPlan);
+			
+			break;
+		}
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + customer.getCustomerStatus());
 		}
 		
-		if(customerDto.getCustomerRegisteredDate() != null) {
-			customer.setCustomerRegisteredDate(customerDto.getCustomerRegisteredDate());
-		}
-		
-		if(customerDto.getCustomerPlanActivatedDate() != null) {
-			customer.setCustomerPlanActivatedDate(customerDto.getCustomerPlanActivatedDate());
-		}
+//		if(customerDto.getCustomerRegisteredDate() != null) {
+//			customer.setCustomerRegisteredDate(customerDto.getCustomerRegisteredDate());
+//		}
+//		
+//		if(customerDto.getCustomerPlanActivatedDate() != null) {
+//			customer.setCustomerPlanActivatedDate(customerDto.getCustomerPlanActivatedDate());
+//		}
 		
 		Customer updatedcustomer = this.customerRepo.save(customer);
 		CustomerDto updatedcustomerDtoo = this.CustomerToDto(updatedcustomer);
