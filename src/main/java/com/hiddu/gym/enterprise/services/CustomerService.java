@@ -15,7 +15,7 @@ public interface CustomerService {
 	
 	List<CustomerDto> getAllCustomers();
 	
-	CustomerResponse getAllCustomersByPagination(Integer pageNumber, Integer pageSize);
+	CustomerResponse getAllCustomersByPagination(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 	
 	void deleteCustomer(Integer customerId);
 	

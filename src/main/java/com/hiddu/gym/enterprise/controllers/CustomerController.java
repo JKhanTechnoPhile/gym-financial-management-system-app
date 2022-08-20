@@ -59,9 +59,11 @@ public class CustomerController {
 	@GetMapping("/pagination")
 	public ResponseEntity<CustomerResponse> getAllCustomersByPagination(
 			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize
+			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+			@RequestParam(value = "sortBy", defaultValue = "customerName", required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
 			) {
-		return ResponseEntity.ok(this.customerService.getAllCustomersByPagination(pageNumber, pageSize));
+		return ResponseEntity.ok(this.customerService.getAllCustomersByPagination(pageNumber, pageSize, sortBy, sortDir));
 	}
 	
 	@GetMapping("/{customerId}")
