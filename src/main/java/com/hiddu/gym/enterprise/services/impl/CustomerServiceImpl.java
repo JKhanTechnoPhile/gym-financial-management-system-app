@@ -79,11 +79,24 @@ public class CustomerServiceImpl implements CustomerService {
 		customer.setCustomerEnquiredDate(customerDto.getCustomerEnquiredDate());
 		customer.setCustomerStatus(customerDto.getCustomerStatus());
 		
+		if(StringUtils.hasLength(customerDto.getCustomerIdProof())) {
+			customer.setCustomerIdProof(customerDto.getCustomerIdProof());
+		}
+		if(StringUtils.hasLength(customerDto.getCustomerIdType())) {
+			customer.setCustomerIdType(customerDto.getCustomerIdType());
+		}
+		
 		if(StringUtils.hasLength(customerDto.getCustomerEmailId())) {
 			customer.setCustomerEmailId(customerDto.getCustomerEmailId());
 		}
 		
 		switch (customer.getCustomerStatus()) {
+		case CUSTOMER_ENQUIRED: {
+			if(customer.getCustomerEnquiredDate() == null) {
+				customer.setCustomerEnquiredDate(new Date());
+			}
+			break;
+		}
 		case CUSTOMER_REGISTERED: {
 			
 			if(!StringUtils.hasLength(customerDto.getCustomerIdType()) && !StringUtils.hasLength(customerDto.getCustomerIdProof())) {

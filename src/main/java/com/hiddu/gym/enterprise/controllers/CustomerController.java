@@ -1,12 +1,19 @@
 package com.hiddu.gym.enterprise.controllers;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +23,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hiddu.gym.enterprise.config.AppConstants;
 import com.hiddu.gym.enterprise.payloads.ApiResponse;
 import com.hiddu.gym.enterprise.payloads.CustomerDto;
 import com.hiddu.gym.enterprise.payloads.CustomerResponse;
 import com.hiddu.gym.enterprise.services.CustomerService;
+import com.hiddu.gym.enterprise.services.FileService;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -29,6 +38,13 @@ public class CustomerController {
 
 	@Autowired
 	private CustomerService customerService;
+	
+	@Autowired
+	private FileService fileService;
+	
+	@Value("${project.image}")
+	private String path;
+	
 	//POST-create customer
 	@PostMapping("/")
 	public ResponseEntity<CustomerDto> createCustomer(@Valid @RequestBody CustomerDto customerDto) {
@@ -79,6 +95,36 @@ public class CustomerController {
 			) {
 		return ResponseEntity.ok(this.customerService.searchCustomers(keywords));
 		
+	}
+	
+	//Image upload
+	@PostMapping("/upload/image/{customerId}")
+	public ResponseEntity<CustomerDto> uploadCustomerDocumentAny(
+			@RequestParam("image") MultipartFile image,
+			@PathVariable Integer customerId
+			) throws IOException {
+		CustomerDto customerDto = this.customerService.getCustomerById(customerId);
+		
+		String fileName = this.fileService.uploadImage(path, image);
+		
+		customerDto.setCustomerIdProof(fileName);
+		customerDto.setCustomerIdType("Aadhaar");
+		
+		CustomerDto updatedCustomerDto = this.customerService.updateCustomer(customerDto, customerId);
+		
+		
+		return ResponseEntity.ok(updatedCustomerDto);
+	}
+	
+	//Download Image
+	@GetMapping(value = "/download/image/{imageName}",produces = MediaType.IMAGE_JPEG_VALUE)
+	public void downloadImage(
+			@PathVariable("imageName") String imageName,
+			HttpServletResponse response
+			) throws IOException {
+		InputStream resource = this.fileService.getResource(path, imageName);
+		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+		StreamUtils.copy(resource, response.getOutputStream());
 	}
 	
 }
