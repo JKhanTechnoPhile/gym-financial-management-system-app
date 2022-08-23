@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hiddu.gym.enterprise.execptions.ApiException;
 import com.hiddu.gym.enterprise.payloads.JwtAuthRequest;
 import com.hiddu.gym.enterprise.payloads.JwtAuthResponse;
 import com.hiddu.gym.enterprise.security.JwtTokenHelper;
@@ -54,7 +55,7 @@ public class AuthController {
 		try {
 			this.authenticationManager.authenticate(authenticationToken);
 		} catch (BadCredentialsException e) {
-			throw new Exception("Invalid username or password..!!");
+			throw new ApiException("Invalid username or password..!!");
 		}
 	}
 
