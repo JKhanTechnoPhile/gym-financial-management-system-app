@@ -6,13 +6,17 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.hiddu.gym.enterprise.config.AppConstants;
 import com.hiddu.gym.enterprise.entities.GymBranch;
+import com.hiddu.gym.enterprise.entities.Role;
 import com.hiddu.gym.enterprise.entities.User;
 import com.hiddu.gym.enterprise.execptions.ResourceNotFoundException;
 import com.hiddu.gym.enterprise.payloads.UserDto;
 import com.hiddu.gym.enterprise.repositories.GymBranchRepo;
+import com.hiddu.gym.enterprise.repositories.RoleRepo;
 import com.hiddu.gym.enterprise.repositories.UserRepo;
 import com.hiddu.gym.enterprise.services.UserService;
 
@@ -27,6 +31,12 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private GymBranchRepo gymBranchRepo;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private RoleRepo roleRepo;
 
 	@Override
 	public UserDto createUser(UserDto userDto) {
@@ -104,5 +114,27 @@ public class UserServiceImpl implements UserService {
 	private UserDto userToDto(User user) {
 		UserDto userDto = this.modelMapper.map(user, UserDto.class);
 		return userDto;
+	}
+
+	@Override
+	public UserDto registerNewUser(UserDto userDto) {
+		
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(userDto.getGymBranchCode());
+		if(gymBranch == null)
+			throw new ResourceNotFoundException("GymBranch", "gymCode", userDto.getGymBranchCode());
+		
+		userDto.setPassword("password123");
+		User user = this.dtoToUser(userDto);
+		user.setUserCreatedDate(new Date());
+		user.setGymBranch(gymBranch);		
+		user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
+		
+		Role role = this.roleRepo.findById(userDto.getRoleType()).get();
+		
+		user.getRoles().add(role);
+		
+		User newUser = this.userRepo.save(user);
+		
+		return this.userToDto(newUser);
 	}
 }

@@ -1,15 +1,14 @@
 package com.hiddu.gym.enterprise.payloads;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.hiddu.gym.enterprise.entities.GymBranch;
-import com.hiddu.gym.enterprise.enums.UserEnum;
-import com.hiddu.gym.enterprise.enums.UserIdTypeEnum;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,7 +47,12 @@ public class UserDto {
 	private String userType;
 	
 	@NotEmpty
+	private int roleType;
+	
+	@NotEmpty
 	private String gymBranchCode;
 	
 	private GymBranchDto gymBranch;
+	
+	private Set<RoleDto> roles = new HashSet<>();
 }

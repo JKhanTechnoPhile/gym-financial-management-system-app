@@ -64,9 +64,9 @@ public class User implements UserDetails {
 	@Column(name = "user_id_proof", nullable = true)
 	private String userIdProof;
 	
-	@Convert(converter = UserEnumJpaConverter.class)
+//	@Convert(converter = UserEnumJpaConverter.class)
 	@Column(name = "user_type", nullable = false)
-	private UserEnum userType;
+	private String userType;
 	
 	@Column(name = "created_date", nullable = false)
 	private Date userCreatedDate;
@@ -75,7 +75,7 @@ public class User implements UserDetails {
 	@JoinColumn(name = "gym_branch_id")
 	private GymBranch gymBranch;
 	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="user_role",
 	joinColumns = @JoinColumn(name="user", referencedColumnName = "id"),
 	inverseJoinColumns = @JoinColumn(name="role", referencedColumnName = "id"))
