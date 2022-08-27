@@ -8,13 +8,13 @@ public interface GymSubscriptionPlanService {
 
 	GymSubscriptionPlanDto createGymSubscriptionPlan(GymSubscriptionPlanDto gymBranch);
 	
-	GymSubscriptionPlanDto updateGymSubscriptionPlan(GymSubscriptionPlanDto gymBranch, Integer gymId);
+	GymSubscriptionPlanDto updateGymSubscriptionPlan(GymSubscriptionPlanDto gymBranch, String gymCode, Integer gymId);
 	
-	GymSubscriptionPlanDto getGymSubscriptionPlanById(Integer gymId);
+	GymSubscriptionPlanDto getGymSubscriptionPlanById(String gymCode, Integer gymId);
 	
 	List<GymSubscriptionPlanDto> getAllGymSubscriptionPlans();
 	
-	void deleteGymSubscriptionPlan(Integer gymId);
+	void deleteGymSubscriptionPlan(String gymCode, Integer gymId);
 	
 	List<GymSubscriptionPlanDto> getGymSubscriptionPlansByBranch(String gymCode);
 }

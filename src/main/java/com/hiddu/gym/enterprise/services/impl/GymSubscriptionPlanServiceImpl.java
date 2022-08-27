@@ -42,7 +42,11 @@ public class GymSubscriptionPlanServiceImpl implements GymSubscriptionPlanServic
 	}
 
 	@Override
-	public GymSubscriptionPlanDto updateGymSubscriptionPlan(GymSubscriptionPlanDto gymSubscriptionPlanDto, Integer gymSubscriptionPlanId) {
+	public GymSubscriptionPlanDto updateGymSubscriptionPlan(GymSubscriptionPlanDto gymSubscriptionPlanDto, String gymCode, Integer gymSubscriptionPlanId) {
+		
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(gymCode);
+		if(gymBranch == null)
+			throw new ResourceNotFoundException("Gym Branch","gymCode", gymCode);
 		
 		GymSubscriptionPlan gymSubscriptionPlan = this.gymSubscriptionPlanRepo.findById(gymSubscriptionPlanId)
 				.orElseThrow(()-> new ResourceNotFoundException("GymSubscriptionPlanId","id", gymSubscriptionPlanId));
@@ -56,10 +60,18 @@ public class GymSubscriptionPlanServiceImpl implements GymSubscriptionPlanServic
 	}
 
 	@Override
-	public GymSubscriptionPlanDto getGymSubscriptionPlanById(Integer gymSubscriptionPlanId) {
+	public GymSubscriptionPlanDto getGymSubscriptionPlanById(String gymCode, Integer gymSubscriptionPlanId) {
 		
-		GymSubscriptionPlan gymSubscriptionPlan = this.gymSubscriptionPlanRepo.findById(gymSubscriptionPlanId)
-				.orElseThrow(()-> new ResourceNotFoundException("GymSubscriptionPlanId","id", gymSubscriptionPlanId));
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(gymCode);
+		if(gymBranch == null)
+			throw new ResourceNotFoundException("Gym Branch","gymCode", gymCode);
+		
+//		GymSubscriptionPlan gymSubscriptionPlan = this.gymSubscriptionPlanRepo.findById(gymSubscriptionPlanId)
+//				.orElseThrow(()-> new ResourceNotFoundException("GymSubscriptionPlanId","id", gymSubscriptionPlanId));
+		GymSubscriptionPlan gymSubscriptionPlan = this.gymSubscriptionPlanRepo.findSubscriptionPlanByGymIdAndSubscriptionId(gymSubscriptionPlanId, gymBranch.getId());
+		
+		if(gymSubscriptionPlan == null)
+			throw new ResourceNotFoundException("Gym Subscription Plan","gymSubscriptionPlanId", gymSubscriptionPlanId);
 		
 		GymSubscriptionPlanDto gymSubscriptionPlanDto = this.gymSubscriptionPlanToDto(gymSubscriptionPlan);
 		
@@ -86,9 +98,17 @@ public class GymSubscriptionPlanServiceImpl implements GymSubscriptionPlanServic
 	}
 
 	@Override
-	public void deleteGymSubscriptionPlan(Integer gymSubscriptionPlanId) {
-		GymSubscriptionPlan gymSubscriptionPlan = this.gymSubscriptionPlanRepo.findById(gymSubscriptionPlanId)
-				.orElseThrow(()-> new ResourceNotFoundException("GymSubscriptionPlanId","id", gymSubscriptionPlanId));
+	public void deleteGymSubscriptionPlan(String gymCode, Integer gymSubscriptionPlanId) {
+		
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(gymCode);
+		if(gymBranch == null)
+			throw new ResourceNotFoundException("Gym Branch","gymCode", gymCode);
+		
+		GymSubscriptionPlan gymSubscriptionPlan = this.gymSubscriptionPlanRepo.findSubscriptionPlanByGymIdAndSubscriptionId(gymSubscriptionPlanId, gymBranch.getId());
+		
+		if(gymSubscriptionPlan == null)
+			throw new ResourceNotFoundException("Gym Subscription Plan","gymSubscriptionPlanId", gymSubscriptionPlanId);
+		
 		this.gymSubscriptionPlanRepo.delete(gymSubscriptionPlan);
 
 	}

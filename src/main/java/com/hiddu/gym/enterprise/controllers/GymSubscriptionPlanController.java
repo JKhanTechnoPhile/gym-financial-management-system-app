@@ -30,37 +30,37 @@ public class GymSubscriptionPlanController {
 
 	@PreAuthorize("hasRole('PLATFORM_ADMIN')")
 	@PostMapping("/")
-	public ResponseEntity<GymSubscriptionPlanDto> createGymBranch(@Valid @RequestBody GymSubscriptionPlanDto gymSubscriptionPlanDto) {
+	public ResponseEntity<GymSubscriptionPlanDto> createSubscriptionPlan(@Valid @RequestBody GymSubscriptionPlanDto gymSubscriptionPlanDto) {
 		GymSubscriptionPlanDto createdGymSubscriptionPlanDto = this.gymSubscriptionPlanService.createGymSubscriptionPlan(gymSubscriptionPlanDto);
 		return new ResponseEntity<>(createdGymSubscriptionPlanDto, HttpStatus.CREATED);
 	}
 
 	@PreAuthorize("hasRole('PLATFORM_ADMIN')")
-	@PutMapping("/{gymSubscriptionPlanCode}")
-	public ResponseEntity<GymSubscriptionPlanDto> updateGymBranch(@Valid @RequestBody GymSubscriptionPlanDto gymSubscriptionPlanDto, @PathVariable("gymSubscriptionPlanCode") Integer gymSubscriptionPlanCode) {
-		GymSubscriptionPlanDto updatedGymBranchDto = this.gymSubscriptionPlanService.updateGymSubscriptionPlan(gymSubscriptionPlanDto, gymSubscriptionPlanCode);
+	@PutMapping("/{gymCode}/{gymSubscriptionPlanCode}")
+	public ResponseEntity<GymSubscriptionPlanDto> updateSubscriptionPlan(@Valid @RequestBody GymSubscriptionPlanDto gymSubscriptionPlanDto, @PathVariable String gymCode, @PathVariable("gymSubscriptionPlanCode") Integer gymSubscriptionPlanCode) {
+		GymSubscriptionPlanDto updatedGymBranchDto = this.gymSubscriptionPlanService.updateGymSubscriptionPlan(gymSubscriptionPlanDto, gymCode, gymSubscriptionPlanCode);
 		return ResponseEntity.ok(updatedGymBranchDto);
 	}
 
 	@PreAuthorize("hasRole('PLATFORM_ADMIN')")
-	@DeleteMapping("/{gymSubscriptionPlanCode}")
-	public ResponseEntity<ApiResponse> deleteGymBranch(@PathVariable Integer gymSubscriptionPlanCode) {
-		this.gymSubscriptionPlanService.deleteGymSubscriptionPlan(gymSubscriptionPlanCode);
+	@DeleteMapping("/{gymCode}/{gymSubscriptionPlanCode}")
+	public ResponseEntity<ApiResponse> deleteSubscriptionPlan(@PathVariable String gymCode, @PathVariable Integer gymSubscriptionPlanCode) {
+		this.gymSubscriptionPlanService.deleteGymSubscriptionPlan(gymCode, gymSubscriptionPlanCode);
 		return ResponseEntity.ok(new ApiResponse("Gym branch deleted successfully", true));
 	}
 
 	@GetMapping("/")
-	public ResponseEntity<List<GymSubscriptionPlanDto>> getAllGymBranches() {
+	public ResponseEntity<List<GymSubscriptionPlanDto>> getAllSubscriptionPlans() {
 		return ResponseEntity.ok(this.gymSubscriptionPlanService.getAllGymSubscriptionPlans());
 	}
 
-//	@GetMapping("/{gymSubscriptionPlanCode}")
-//	public ResponseEntity<GymSubscriptionPlanDto> getGymBranch(@PathVariable Integer gymSubscriptionPlanCode) {
-//		return ResponseEntity.ok(this.gymSubscriptionPlanService.getGymSubscriptionPlanById(gymSubscriptionPlanCode));
-//	}
+	@GetMapping("/{gymCode}/{gymSubscriptionPlanCode}")
+	public ResponseEntity<GymSubscriptionPlanDto> getSubscriptionPlansByGymCodeAndId(@PathVariable String gymCode, @PathVariable Integer gymSubscriptionPlanCode) {
+		return ResponseEntity.ok(this.gymSubscriptionPlanService.getGymSubscriptionPlanById(gymCode, gymSubscriptionPlanCode));
+	}
 	
 	@GetMapping("/{gymCode}")
-	public ResponseEntity<List<GymSubscriptionPlanDto>> getAllGymSubscriptionPlansByGymCode(@PathVariable String gymCode) {
+	public ResponseEntity<List<GymSubscriptionPlanDto>> getAllSubscriptionPlansByGymCode(@PathVariable String gymCode) {
 		return ResponseEntity.ok(this.gymSubscriptionPlanService.getGymSubscriptionPlansByBranch(gymCode));
 	}
 
