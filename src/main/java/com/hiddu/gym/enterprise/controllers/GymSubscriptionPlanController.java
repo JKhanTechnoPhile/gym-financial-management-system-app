@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,18 +28,21 @@ public class GymSubscriptionPlanController {
 	@Autowired
 	private GymSubscriptionPlanService gymSubscriptionPlanService;
 
+	@PreAuthorize("hasRole('PLATFORM_ADMIN')")
 	@PostMapping("/")
 	public ResponseEntity<GymSubscriptionPlanDto> createGymBranch(@Valid @RequestBody GymSubscriptionPlanDto gymSubscriptionPlanDto) {
 		GymSubscriptionPlanDto createdGymSubscriptionPlanDto = this.gymSubscriptionPlanService.createGymSubscriptionPlan(gymSubscriptionPlanDto);
 		return new ResponseEntity<>(createdGymSubscriptionPlanDto, HttpStatus.CREATED);
 	}
 
+	@PreAuthorize("hasRole('PLATFORM_ADMIN')")
 	@PutMapping("/{gymSubscriptionPlanCode}")
 	public ResponseEntity<GymSubscriptionPlanDto> updateGymBranch(@Valid @RequestBody GymSubscriptionPlanDto gymSubscriptionPlanDto, @PathVariable("gymSubscriptionPlanCode") Integer gymSubscriptionPlanCode) {
 		GymSubscriptionPlanDto updatedGymBranchDto = this.gymSubscriptionPlanService.updateGymSubscriptionPlan(gymSubscriptionPlanDto, gymSubscriptionPlanCode);
 		return ResponseEntity.ok(updatedGymBranchDto);
 	}
 
+	@PreAuthorize("hasRole('PLATFORM_ADMIN')")
 	@DeleteMapping("/{gymSubscriptionPlanCode}")
 	public ResponseEntity<ApiResponse> deleteGymBranch(@PathVariable Integer gymSubscriptionPlanCode) {
 		this.gymSubscriptionPlanService.deleteGymSubscriptionPlan(gymSubscriptionPlanCode);

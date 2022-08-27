@@ -28,6 +28,7 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	//POST-create user
+	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN')")
 	@PostMapping("/")
 	public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
 		UserDto createdUserDto = this.userService.createUser(userDto);
@@ -35,6 +36,7 @@ public class UserController {
 	}
 	
 	//PUT-update user
+	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN')")
 	@PutMapping("/{userId}")
 //	public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable Integer userId) {
 	public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable("userId") Integer uId) {
@@ -44,8 +46,8 @@ public class UserController {
 	}
 	
 	//DELETE-delete user
-	@PreAuthorize("hasRole('PLATFORM_ADMIN')")	//support single role validation
-//	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN')")
+//	@PreAuthorize("hasRole('PLATFORM_ADMIN')")	//support single role validation
+	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN')")
 	@DeleteMapping("/{userId}")
 	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Integer userId) {
 		this.userService.deleteUser(userId);

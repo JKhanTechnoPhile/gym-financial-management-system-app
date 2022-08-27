@@ -1,6 +1,5 @@
 package com.hiddu.gym.enterprise.controllers;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +46,7 @@ public class CustomerController {
 	private String path;
 	
 	//POST-create customer
+	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN', 'BRANCH_MANAGER')")
 	@PostMapping("/")
 	public ResponseEntity<CustomerDto> createCustomer(@Valid @RequestBody CustomerDto customerDto) {
 		CustomerDto createdCustomerDto = this.customerService.createCustomer(customerDto);
@@ -53,13 +54,15 @@ public class CustomerController {
 	}
 	
 	//PUT-update customer
+	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN', 'BRANCH_MANAGER')")
 	@PutMapping("/{customerId}")
-	public ResponseEntity<CustomerDto> updateCustomer(@Valid @RequestBody CustomerDto customerDto, @PathVariable("customerId") Integer cId) {
-		CustomerDto updatedUser = this.customerService.updateCustomer(customerDto, cId);
+	public ResponseEntity<CustomerDto> updateCustomer(@Valid @RequestBody CustomerDto customerDto, @PathVariable("customerId") Integer customerId) {
+		CustomerDto updatedUser = this.customerService.updateCustomer(customerDto, customerId);
 		return ResponseEntity.ok(updatedUser);
 	}
 	
 	//DELETE-delete customer
+	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN', 'BRANCH_MANAGER')")
 	@DeleteMapping("/{customerId}")
 	public ResponseEntity<ApiResponse> deleteCustomer(@PathVariable Integer customerId) {
 		this.customerService.deleteCustomer(customerId);
@@ -98,6 +101,7 @@ public class CustomerController {
 	}
 	
 	//Image upload
+	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN', 'BRANCH_MANAGER')")
 	@PostMapping("/upload/image/{customerId}")
 	public ResponseEntity<CustomerDto> uploadCustomerDocumentAny(
 			@RequestParam("image") MultipartFile image,

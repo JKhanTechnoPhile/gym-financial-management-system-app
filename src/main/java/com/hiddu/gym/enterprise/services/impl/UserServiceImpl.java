@@ -41,16 +41,17 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDto createUser(UserDto userDto) {
 		
-		GymBranch gymBranch = gymBranchRepo.findByGymCode(userDto.getGymBranchCode());
-		if(gymBranch == null)
-			throw new ResourceNotFoundException("GymBranch", "gymCode", userDto.getGymBranchCode());
-		
-		userDto.setPassword("password123");
-		User user = this.dtoToUser(userDto);
-		user.setUserCreatedDate(new Date());
-		user.setGymBranch(gymBranch);
-		User savedUser = this.userRepo.save(user);
-		return this.userToDto(savedUser);
+//		GymBranch gymBranch = gymBranchRepo.findByGymCode(userDto.getGymBranchCode());
+//		if(gymBranch == null)
+//			throw new ResourceNotFoundException("GymBranch", "gymCode", userDto.getGymBranchCode());
+//		
+//		userDto.setPassword("password123");
+//		User user = this.dtoToUser(userDto);
+//		user.setUserCreatedDate(new Date());
+//		user.setGymBranch(gymBranch);
+//		User savedUser = this.userRepo.save(user);
+//		return this.userToDto(savedUser);
+		return this.registerNewUser(userDto);
 	}
 
 	@Override
