@@ -44,8 +44,8 @@ public class UserController {
 	}
 	
 	//DELETE-delete user
-//	@PreAuthorize("hasRole('PLATFORM_ADMIN')")	//support single role validation
-	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN')")
+	@PreAuthorize("hasRole('PLATFORM_ADMIN')")	//support single role validation
+//	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN')")
 	@DeleteMapping("/{userId}")
 	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Integer userId) {
 		this.userService.deleteUser(userId);

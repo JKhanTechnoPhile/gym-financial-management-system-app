@@ -30,7 +30,7 @@ import lombok.Setter;
 public class GymSubscriptionPlan {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@Column(name = "gym_plan_name", nullable = false)

@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,18 +28,21 @@ public class GymBranchController {
 	@Autowired
 	private GymBranchService gymBranchService;
 
+	@PreAuthorize("hasRole('PLATFORM_ADMIN')")
 	@PostMapping("/")
 	public ResponseEntity<GymBranchDto> createGymBranch(@Valid @RequestBody GymBranchDto gymBranchDto) {
 		GymBranchDto createdGymBranchDto = this.gymBranchService.createGymBranch(gymBranchDto);
 		return new ResponseEntity<>(createdGymBranchDto, HttpStatus.CREATED);
 	}
 
+	@PreAuthorize("hasRole('PLATFORM_ADMIN')")
 	@PutMapping("/{gymCode}")
 	public ResponseEntity<GymBranchDto> updateGymBranch(@Valid @RequestBody GymBranchDto gymBranchDto, @PathVariable("gymCode") Integer gymCode) {
 		GymBranchDto updatedGymBranchDto = this.gymBranchService.updateGymBranch(gymBranchDto, gymCode);
 		return ResponseEntity.ok(updatedGymBranchDto);
 	}
 
+	@PreAuthorize("hasRole('PLATFORM_ADMIN')")
 	@DeleteMapping("/{gymCode}")
 	public ResponseEntity<ApiResponse> deleteGymBranch(@PathVariable Integer gymCode) {
 		this.gymBranchService.deleteGymBranch(gymCode);

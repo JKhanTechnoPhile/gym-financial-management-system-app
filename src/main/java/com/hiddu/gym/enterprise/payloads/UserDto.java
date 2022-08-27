@@ -46,7 +46,6 @@ public class UserDto {
 	@NotEmpty
 	private String userType;
 	
-	@NotEmpty
 	private int roleType;
 	
 	@NotEmpty

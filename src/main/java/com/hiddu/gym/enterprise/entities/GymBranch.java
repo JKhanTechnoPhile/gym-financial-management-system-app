@@ -24,7 +24,7 @@ import lombok.Setter;
 public class GymBranch {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@Column(name = "gym_code", nullable = false, length = 100)

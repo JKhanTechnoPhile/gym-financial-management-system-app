@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -25,9 +24,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.hiddu.gym.enterprise.enums.UserEnum;
 import com.hiddu.gym.enterprise.enums.UserIdTypeEnum;
-import com.hiddu.gym.enterprise.enums.converters.UserEnumJpaConverter;
 import com.hiddu.gym.enterprise.enums.converters.UserIdTypeEnumJpaConverter;
 
 import lombok.Getter;
@@ -42,7 +39,7 @@ import lombok.Setter;
 public class User implements UserDetails {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@Column(name = "full_name", nullable = false, length = 100)
@@ -54,7 +51,7 @@ public class User implements UserDetails {
 	@Column(name = "email_id", nullable = true, length = 100)
 	private String emailId;
 	
-	@Column(name = "password", nullable = false, length = 50)
+	@Column(name = "password", nullable = false, length = 200)
 	private String password;
 	
 	@Convert(converter = UserIdTypeEnumJpaConverter.class)

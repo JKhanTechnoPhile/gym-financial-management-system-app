@@ -11,7 +11,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.hiddu.gym.enterprise.config.AppConstants;
 import com.hiddu.gym.enterprise.entities.Role;
 import com.hiddu.gym.enterprise.enums.UserEnum;
 import com.hiddu.gym.enterprise.repositories.RoleRepo;
@@ -49,16 +48,7 @@ public class GymFinancialManagementSystemAppApplication implements CommandLineRu
 				roles.add(role);
 			}
 			
-//			
-//			Role adminRole = new Role();
-//			adminRole.setId(AppConstants.ADMIN_USER);
-//			adminRole.setName("ADMIN_USER");
-//			
-//			Role normalRole = new Role();
-//			normalRole.setId(AppConstants.NORMAL_USER);
-//			normalRole.setName("NORMAL_USER");
-//			
-//			List<Role> roles = List.of(adminRole, normalRole);
+
 			List<Role> result = this.roleRepo.saveAll(roles);
 			
 			result.forEach(savedRole -> System.out.println(savedRole.getName()));
