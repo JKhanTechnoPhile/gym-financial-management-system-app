@@ -55,17 +55,17 @@ public class CustomerController {
 	
 	//PUT-update customer
 	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN', 'BRANCH_MANAGER')")
-	@PutMapping("/{customerId}")
-	public ResponseEntity<CustomerDto> updateCustomer(@Valid @RequestBody CustomerDto customerDto, @PathVariable("customerId") Integer customerId) {
-		CustomerDto updatedUser = this.customerService.updateCustomer(customerDto, customerId);
+	@PutMapping("/{gymCode}/{contactNumber}")
+	public ResponseEntity<CustomerDto> updateCustomer(@Valid @RequestBody CustomerDto customerDto, @PathVariable String gymCode, @PathVariable("contactNumber") String contactNumber) {
+		CustomerDto updatedUser = this.customerService.updateCustomer(customerDto, gymCode, contactNumber);
 		return ResponseEntity.ok(updatedUser);
 	}
 	
 	//DELETE-delete customer
 	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN', 'BRANCH_MANAGER')")
-	@DeleteMapping("/{customerId}")
-	public ResponseEntity<ApiResponse> deleteCustomer(@PathVariable Integer customerId) {
-		this.customerService.deleteCustomer(customerId);
+	@DeleteMapping("/{gymCode}/{contactNumber}")
+	public ResponseEntity<ApiResponse> deleteCustomer(@PathVariable String gymCode, @PathVariable("contactNumber") String contactNumber) {
+		this.customerService.deleteCustomer(gymCode, contactNumber);
 		return ResponseEntity.ok(new ApiResponse("Customer deleted successfully", true));
 	}
 	
@@ -87,8 +87,24 @@ public class CustomerController {
 	}
 	
 	@GetMapping("/{customerId}")
-	public ResponseEntity<CustomerDto> getCustomer(@PathVariable Integer customerId) {
+	public ResponseEntity<CustomerDto> getCustomerById(@PathVariable Integer customerId) {
 		return ResponseEntity.ok(this.customerService.getCustomerById(customerId));
+	}
+	
+	@GetMapping("/gym/{gymCode}/{customerId}")
+	public ResponseEntity<CustomerDto> getCustomerByGymCodeAndId(@PathVariable String gymCode, @PathVariable Integer customerId) {
+		return ResponseEntity.ok(this.customerService.getCustomerByIdAndGymBranchId(customerId, gymCode));
+	}
+	
+	@GetMapping("/gym/{gymCode}/contact/{contactNumber}")
+	public ResponseEntity<CustomerDto> getCustomerByGymCodeAndContact(@PathVariable String gymCode, @PathVariable String contactNumber) {
+		return ResponseEntity.ok(this.customerService.getCustomerByContactAndGymBranchId(contactNumber, gymCode));
+	}
+	
+	//GET-customer get
+	@GetMapping("/contact/{contactNumber}")
+	public ResponseEntity<List<CustomerDto>> getAllCustomersByContact(@PathVariable String contactNumber) {
+		return ResponseEntity.ok(this.customerService.geCustomersByContactNumber(contactNumber));
 	}
 	
 	//Search
@@ -102,19 +118,19 @@ public class CustomerController {
 	
 	//Image upload
 	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN', 'BRANCH_MANAGER')")
-	@PostMapping("/upload/image/{customerId}")
+	@PostMapping("/upload/image/{gymCode}/{contactNumber}")
 	public ResponseEntity<CustomerDto> uploadCustomerDocumentAny(
 			@RequestParam("image") MultipartFile image,
-			@PathVariable Integer customerId
+			@PathVariable String gymCode, @PathVariable String contactNumber
 			) throws IOException {
-		CustomerDto customerDto = this.customerService.getCustomerById(customerId);
+		CustomerDto customerDto = this.customerService.getCustomerByContactAndGymBranchId(contactNumber, gymCode);
 		
 		String fileName = this.fileService.uploadImage(path, image);
 		
 		customerDto.setCustomerIdProof(fileName);
 		customerDto.setCustomerIdType("Aadhaar");
 		
-		CustomerDto updatedCustomerDto = this.customerService.updateCustomer(customerDto, customerId);
+		CustomerDto updatedCustomerDto = this.customerService.updateCustomer(customerDto, gymCode, contactNumber);
 		
 		
 		return ResponseEntity.ok(updatedCustomerDto);

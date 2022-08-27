@@ -11,6 +11,15 @@ import com.hiddu.gym.enterprise.entities.GymBranch;
 import com.hiddu.gym.enterprise.entities.GymSubscriptionPlan;
 
 public interface CustomerRepo extends JpaRepository<Customer, Integer>{
+	
+	@Query("FROM Customer WHERE gymBranch.id = :gymBranchId and id = :customerId")
+	Customer findByCustomerIdAndGymCode(Integer customerId, Integer gymBranchId);
+	
+	@Query("FROM Customer WHERE gymBranch.id = :gymBranchId and customerPhoneNumber = :contactNumber")
+	Customer findByContactAndGymCode(String contactNumber, Integer gymBranchId);
+	
+	@Query("FROM Customer WHERE customerPhoneNumber = :contactNumber")
+	List<Customer> findByContact(String contactNumber);
 
 	List<Customer> findByGymBranch(GymBranch gymBranch);
 	

@@ -65,13 +65,16 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public CustomerDto updateCustomer(CustomerDto customerDto, Integer customerId) {
-		Customer customer = this.customerRepo.findById(customerId)
-				.orElseThrow(()-> new ResourceNotFoundException("Customer","id", customerId));
+	public CustomerDto updateCustomer(CustomerDto customerDto, String gymCode, String contactNumber) {
 		
-		GymBranch gymBranch = gymBranchRepo.findByGymCode(customerDto.getGymBranchCode());
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(gymCode);
 		if(gymBranch == null)
-			throw new ResourceNotFoundException("GymBranch", "gymCode", customerDto.getGymBranchCode());
+			throw new ResourceNotFoundException("GymBranch", "gymCode", gymCode);
+		
+		
+		Customer customer = this.customerRepo.findByContactAndGymCode(contactNumber, gymBranch.getId());		
+		if(customer == null)
+			throw new ResourceNotFoundException("Customer", "contactNumber", contactNumber);
 		
 		customer.setGymBranch(gymBranch);
 		customer.setCustomerName(customerDto.getCustomerName());
@@ -185,9 +188,17 @@ public class CustomerServiceImpl implements CustomerService {
 	
 
 	@Override
-	public void deleteCustomer(Integer customerId) {
-		Customer customer = this.customerRepo.findById(customerId)
-				.orElseThrow(()-> new ResourceNotFoundException("Customer","id", customerId));
+	public void deleteCustomer(String gymCode, String contactNumber) {
+		
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(gymCode);
+		if(gymBranch == null)
+			throw new ResourceNotFoundException("GymBranch", "gymCode", gymCode);
+		
+		
+		Customer customer = this.customerRepo.findByContactAndGymCode(contactNumber, gymBranch.getId());		
+		if(customer == null)
+			throw new ResourceNotFoundException("Customer", "contactNumber", contactNumber);
+		
 		this.customerRepo.delete(customer);
 	}
 	
@@ -218,5 +229,40 @@ public class CustomerServiceImpl implements CustomerService {
 	private CustomerDto CustomerToDto(Customer customer) {
 		CustomerDto customerDto = this.modelMapper.map(customer, CustomerDto.class);
 		return customerDto;
+	}
+
+	@Override
+	public CustomerDto getCustomerByIdAndGymBranchId(Integer customerId, String gymCode) {
+		
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(gymCode);
+		if(gymBranch == null)
+			throw new ResourceNotFoundException("Gym Branch","gymCode", gymCode);
+		
+		Customer customer = this.customerRepo.findByCustomerIdAndGymCode(customerId, gymBranch.getId());
+		if(customer == null)
+			throw new ResourceNotFoundException("Customer","id", customerId);
+		
+		return this.modelMapper.map(customer, CustomerDto.class);
+	}
+
+	@Override
+	public CustomerDto getCustomerByContactAndGymBranchId(String contactNumber, String gymCode) {
+		
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(gymCode);
+		if(gymBranch == null)
+			throw new ResourceNotFoundException("Gym Branch","gymCode", gymCode);
+		
+		Customer customer = this.customerRepo.findByContactAndGymCode(contactNumber, gymBranch.getId());
+		if(customer == null)
+			throw new ResourceNotFoundException("Customer","contactNumber", contactNumber);
+		
+		return this.modelMapper.map(customer, CustomerDto.class);
+	}
+
+	@Override
+	public List<CustomerDto> geCustomersByContactNumber(String contactNumber) {
+		List<Customer> customers = this.customerRepo.findByContact(contactNumber);
+		List<CustomerDto> customersDtos = customers.stream().map(customer -> this.CustomerToDto(customer)).collect(Collectors.toList());
+		return customersDtos;
 	}
 }
