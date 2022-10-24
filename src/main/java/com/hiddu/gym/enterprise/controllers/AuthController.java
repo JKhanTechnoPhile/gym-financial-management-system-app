@@ -41,8 +41,8 @@ public class AuthController {
 			@RequestBody JwtAuthRequest request
 			) throws Exception {
 		
-		this.authenticate(request.getUsername(), request.getPassword());
-		UserDetails userDetails = this.userDetailsService.loadUserByUsername(request.getUsername());
+		this.authenticate(request.getUserForAuthentication(), request.getPassword());
+		UserDetails userDetails = this.userDetailsService.loadUserByUsername(request.getUserForAuthentication());
 		String token = this.jwtTokenHelper.generateToken(userDetails);
 		
 		JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
@@ -53,9 +53,9 @@ public class AuthController {
 
 
 
-	private void authenticate(String username, String password) throws Exception {
+	private void authenticate(String usernameWithRoleType, String password) throws Exception {
 		
-		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(usernameWithRoleType, password);
 		try {
 			this.authenticationManager.authenticate(authenticationToken);
 		} catch (BadCredentialsException e) {

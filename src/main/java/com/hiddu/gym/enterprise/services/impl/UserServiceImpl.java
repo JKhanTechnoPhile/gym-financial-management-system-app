@@ -13,6 +13,8 @@ import com.hiddu.gym.enterprise.config.AppConstants;
 import com.hiddu.gym.enterprise.entities.GymBranch;
 import com.hiddu.gym.enterprise.entities.Role;
 import com.hiddu.gym.enterprise.entities.User;
+import com.hiddu.gym.enterprise.enums.UserEnum;
+import com.hiddu.gym.enterprise.execptions.ResourceAlreadyExistsException;
 import com.hiddu.gym.enterprise.execptions.ResourceNotFoundException;
 import com.hiddu.gym.enterprise.payloads.UserDto;
 import com.hiddu.gym.enterprise.repositories.GymBranchRepo;
@@ -124,17 +126,31 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDto registerNewUser(UserDto userDto) {
 		
+//		TODO: Need validation for creating user - example: Role - Platform Admin (only one user across system / platform ), Other roles - one phone number to many roles but one phone number to same role If already created not allowed 
+		
 		GymBranch gymBranch = gymBranchRepo.findByGymCode(userDto.getGymBranchCode());
 		if(gymBranch == null)
 			throw new ResourceNotFoundException("GymBranch", "gymCode", userDto.getGymBranchCode());
+		
+		Role role = this.roleRepo.findById(userDto.getRoleType()).get();
+		
+		if(role.getId() == UserEnum.USER_PLATFORM_ADMIN.getId()) {	//	USER_PLATFORM_ADMIN should not be more than one
+			User userWithRoleAlreadyExists = this.userRepo.findUserByUserType(role.getName());
+			if(userWithRoleAlreadyExists != null) {
+				throw new ResourceAlreadyExistsException("User", "Role",role.getName());
+			}
+		}
+		
+		User userAlreadyExists = this.userRepo.findUserByPhoneNumberAndUserType(userDto.getPhoneNumber(), role.getName());
+		if(userAlreadyExists != null) {
+			throw new ResourceAlreadyExistsException("User", "Contact Number and Role", userDto.getPhoneNumber()+" , "+role.getName());
+		}
 		
 		userDto.setPassword("password123");
 		User user = this.dtoToUser(userDto);
 		user.setUserCreatedDate(new Date());
 		user.setGymBranch(gymBranch);		
 		user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
-		
-		Role role = this.roleRepo.findById(userDto.getRoleType()).get();
 		
 		user.getRoles().add(role);
 		
