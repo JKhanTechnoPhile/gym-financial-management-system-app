@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.hiddu.gym.enterprise.entities.GymBranch;
 import com.hiddu.gym.enterprise.entities.GymSubscriptionPlan;
+import com.hiddu.gym.enterprise.enums.GymPlanFrequencyEnum;
+import com.hiddu.gym.enterprise.enums.converters.GymPlanFrequencyEnumJpaConverter;
 import com.hiddu.gym.enterprise.execptions.ResourceNotFoundException;
 import com.hiddu.gym.enterprise.payloads.GymSubscriptionPlanDto;
 import com.hiddu.gym.enterprise.repositories.GymBranchRepo;
@@ -33,6 +35,14 @@ public class GymSubscriptionPlanServiceImpl implements GymSubscriptionPlanServic
 		GymBranch gymBranch = gymBranchRepo.findByGymCode(gymSubscriptionPlanDto.getGymBranchCode());
 		if(gymBranch == null)
 			throw new ResourceNotFoundException("GymBranch", "gymCode", gymSubscriptionPlanDto.getGymBranchCode());
+		
+		//TODO: Check If Subscription already added 
+		GymPlanFrequencyEnum selectedFrequency = new GymPlanFrequencyEnumJpaConverter().convertToEntityAttribute(gymSubscriptionPlanDto.getGymPlanFrequency());
+		
+		GymSubscriptionPlan gymSubscriptionPlanAlreadyExists =  this.gymSubscriptionPlanRepo.findSubscriptionPlanBySearch(selectedFrequency, gymSubscriptionPlanDto.getGymPlanBaseFare(), gymBranch.getId());
+		if(gymSubscriptionPlanAlreadyExists != null) {
+			throw new ResourceNotFoundException("GymSubscriptionPlan", "Subscription already added");
+		}
 		
 		GymSubscriptionPlan gymSubscriptionPlan = this.dtoToGymSubscriptionPlan(gymSubscriptionPlanDto);
 		gymSubscriptionPlan.setGymPlanCreatedDate(new Date());

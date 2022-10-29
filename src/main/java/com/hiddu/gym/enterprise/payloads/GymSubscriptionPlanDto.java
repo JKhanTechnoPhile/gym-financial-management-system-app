@@ -1,8 +1,7 @@
 package com.hiddu.gym.enterprise.payloads;
 
-import java.util.Date;
-
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
@@ -21,16 +20,17 @@ public class GymSubscriptionPlanDto {
 	private String gymPlanName;
 	
 	@NotEmpty
+	@Size(min = 4, message = "Gym subscription frequency need to select !!")
 	private String gymPlanFrequency;
 	
-	@NotEmpty
-	private String gymPlanBaseFare;
+	@NotNull
+	private Float gymPlanBaseFare;
 	
-	private Date gymPlanCreatedDate;
+	private Long gymPlanCreatedDate;
 	
-	private Date gymPlanEndDate;
+	private Long gymPlanEndDate;
 	
-	private Date gymPlanEditedDate;
+	private Long gymPlanEditedDate;
 	
 	@NotEmpty
 	private String gymBranchCode;
