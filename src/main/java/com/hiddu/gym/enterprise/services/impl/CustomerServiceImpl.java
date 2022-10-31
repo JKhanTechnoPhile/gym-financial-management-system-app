@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import com.hiddu.gym.enterprise.entities.Customer;
 import com.hiddu.gym.enterprise.entities.GymBranch;
 import com.hiddu.gym.enterprise.entities.GymSubscriptionPlan;
+import com.hiddu.gym.enterprise.enums.CustomerLifeCycleEnum;
 import com.hiddu.gym.enterprise.execptions.ResourceNotFoundException;
 import com.hiddu.gym.enterprise.payloads.CustomerDto;
 import com.hiddu.gym.enterprise.payloads.CustomerResponse;
@@ -44,12 +45,14 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public CustomerDto createCustomer(CustomerDto customerDto) {
 		
-		GymBranch gymBranch = gymBranchRepo.findByGymCode(customerDto.getGymBranchCode());
-		if(gymBranch == null)
-			throw new ResourceNotFoundException("GymBranch", "gymCode", customerDto.getGymBranchCode());
-		
 		Customer customer = this.dtoToCustomer(customerDto);
-		customer.setGymBranch(gymBranch);
+		
+		if(customer.getCustomerStatus() != CustomerLifeCycleEnum.CUSTOMER_ENQUIRED) {
+			GymBranch gymBranch = gymBranchRepo.findByGymCode(customerDto.getGymBranchCode());
+			if(gymBranch == null)
+				throw new ResourceNotFoundException("GymBranch", "gymCode", customerDto.getGymBranchCode());
+			customer.setGymBranch(gymBranch);
+		}
 		
 		switch (customer.getCustomerStatus()) {
 		case CUSTOMER_ENQUIRED: {
@@ -79,7 +82,7 @@ public class CustomerServiceImpl implements CustomerService {
 		customer.setGymBranch(gymBranch);
 		customer.setCustomerName(customerDto.getCustomerName());
 		customer.setCustomerPhoneNumber(customerDto.getCustomerPhoneNumber());
-		customer.setCustomerEnquiredDate(customerDto.getCustomerEnquiredDate());
+		customer.setCustomerEnquiredDate(new Date(customerDto.getCustomerEnquiredDate()));
 		customer.setCustomerStatus(customerDto.getCustomerStatus());
 		
 		if(StringUtils.hasLength(customerDto.getCustomerIdProof())) {

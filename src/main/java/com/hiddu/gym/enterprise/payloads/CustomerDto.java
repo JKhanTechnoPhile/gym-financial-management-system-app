@@ -1,7 +1,5 @@
 package com.hiddu.gym.enterprise.payloads;
 
-import java.util.Date;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -38,11 +36,11 @@ public class CustomerDto {
 	
 	private String customerIdProof;
 	
-	private Date customerEnquiredDate;
+	private Long customerEnquiredDate;
 	
-	private Date customerRegisteredDate;
+	private Long customerRegisteredDate;
 	
-	private Date customerPlanActivatedDate;
+	private Long customerPlanActivatedDate;
 	
 	private String gymBranchCode;
 	
