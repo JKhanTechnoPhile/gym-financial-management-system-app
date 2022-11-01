@@ -28,4 +28,6 @@ public interface CustomerService {
 	List<CustomerDto> geCustomersByContactNumber(String contactNumber);
 	
 	List<CustomerDto> searchCustomers(String keyword);
+	
+	CustomerDto updateCustomerToRegister(CustomerDto customerDto, Integer customerId);
 }

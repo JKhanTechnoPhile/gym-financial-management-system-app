@@ -66,6 +66,42 @@ public class CustomerServiceImpl implements CustomerService {
 		Customer savedCustomerr = this.customerRepo.save(customer);
 		return this.CustomerToDto(savedCustomerr);
 	}
+	
+	@Override
+	public CustomerDto updateCustomerToRegister(CustomerDto customerDto, Integer customerId) {
+		
+		Customer customer = this.customerRepo.findById(customerId)
+				.orElseThrow(()-> new ResourceNotFoundException("Customer","id", customerId));
+		
+		customer.setCustomerName(customerDto.getCustomerName());
+		customer.setCustomerPhoneNumber(customerDto.getCustomerPhoneNumber());
+		customer.setCustomerEnquiredDate(new Date(customerDto.getCustomerEnquiredDate()));
+		customer.setCustomerStatus(customerDto.getCustomerStatus());
+		
+		if(StringUtils.hasLength(customerDto.getCustomerIdProof())) {
+			customer.setCustomerIdProof(customerDto.getCustomerIdProof());
+		}
+		if(StringUtils.hasLength(customerDto.getCustomerIdType())) {
+			customer.setCustomerIdType(customerDto.getCustomerIdType());
+		}
+		
+		if(StringUtils.hasLength(customerDto.getCustomerEmailId())) {
+			customer.setCustomerEmailId(customerDto.getCustomerEmailId());
+		}
+		
+		if(!StringUtils.hasLength(customerDto.getCustomerIdType()) && !StringUtils.hasLength(customerDto.getCustomerIdProof())) {
+			throw new ValidationException("Customer Id Proof could not be empty - Customer Id / Proof");
+		}
+		
+		customer.setCustomerIdType(customerDto.getCustomerIdType());			
+		customer.setCustomerIdProof(customerDto.getCustomerIdProof());
+		customer.setCustomerRegisteredDate(new Date());
+		
+		Customer updatedcustomer = this.customerRepo.save(customer);
+		CustomerDto updatedcustomerDtoo = this.CustomerToDto(updatedcustomer);
+		
+		return updatedcustomerDtoo;
+	}
 
 	@Override
 	public CustomerDto updateCustomer(CustomerDto customerDto, String gymCode, String contactNumber) {

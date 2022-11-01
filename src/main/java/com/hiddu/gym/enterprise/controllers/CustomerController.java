@@ -61,6 +61,14 @@ public class CustomerController {
 		return ResponseEntity.ok(updatedUser);
 	}
 	
+	//PUT-update customer to register before activate plan
+	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN', 'BRANCH_MANAGER')")
+	@PutMapping("/{customerId}")
+	public ResponseEntity<CustomerDto> updateCustomerToRegister(@Valid @RequestBody CustomerDto customerDto, @PathVariable("customerId") Integer customerId) {
+		CustomerDto updatedUser = this.customerService.updateCustomerToRegister(customerDto, customerId);
+		return ResponseEntity.ok(updatedUser);
+	}
+	
 	//DELETE-delete customer
 	@PreAuthorize("hasAnyRole('PLATFORM_ADMIN','BRANCH_ADMIN', 'BRANCH_MANAGER')")
 	@DeleteMapping("/{gymCode}/{contactNumber}")
