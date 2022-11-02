@@ -47,21 +47,12 @@ public class CustomerServiceImpl implements CustomerService {
 		
 		Customer customer = this.dtoToCustomer(customerDto);
 		
-		if(customer.getCustomerStatus() != CustomerLifeCycleEnum.CUSTOMER_ENQUIRED) {
-			GymBranch gymBranch = gymBranchRepo.findByGymCode(customerDto.getGymBranchCode());
-			if(gymBranch == null)
-				throw new ResourceNotFoundException("GymBranch", "gymCode", customerDto.getGymBranchCode());
-			customer.setGymBranch(gymBranch);
-		}
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(customerDto.getGymBranchCode());
+		if(gymBranch == null)
+			throw new ResourceNotFoundException("GymBranch", "gymCode", customerDto.getGymBranchCode());
+		customer.setGymBranch(gymBranch);
 		
-		switch (customer.getCustomerStatus()) {
-		case CUSTOMER_ENQUIRED: {
-			customer.setCustomerEnquiredDate(new Date());
-			break;
-		}
-		default:
-			throw new IllegalArgumentException("Unexpected value: " + customer.getCustomerStatus());
-		}
+		customer.setCustomerEnquiredDate(new Date());
 		
 		Customer savedCustomerr = this.customerRepo.save(customer);
 		return this.CustomerToDto(savedCustomerr);
@@ -69,6 +60,10 @@ public class CustomerServiceImpl implements CustomerService {
 	
 	@Override
 	public CustomerDto updateCustomerToRegister(CustomerDto customerDto, Integer customerId) {
+		
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(customerDto.getGymBranchCode());
+		if(gymBranch == null)
+			throw new ResourceNotFoundException("GymBranch", "gymCode", customerDto.getGymBranchCode());
 		
 		Customer customer = this.customerRepo.findById(customerId)
 				.orElseThrow(()-> new ResourceNotFoundException("Customer","id", customerId));

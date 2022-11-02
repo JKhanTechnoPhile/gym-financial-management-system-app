@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hiddu.gym.enterprise.entities.User;
 import com.hiddu.gym.enterprise.execptions.ApiException;
 import com.hiddu.gym.enterprise.payloads.JwtAuthRequest;
 import com.hiddu.gym.enterprise.payloads.JwtAuthResponse;
@@ -44,9 +45,11 @@ public class AuthController {
 		this.authenticate(request.getUserForAuthentication(), request.getPassword());
 		UserDetails userDetails = this.userDetailsService.loadUserByUsername(request.getUserForAuthentication());
 		String token = this.jwtTokenHelper.generateToken(userDetails);
-		
+		User user = (User)userDetails;
+		UserDto userDto = this.userService.userToDto(user);
 		JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
 		jwtAuthResponse.setToken(token);
+		jwtAuthResponse.setLoggedInUser(userDto);
 		
 		return ResponseEntity.ok(jwtAuthResponse);
 	}

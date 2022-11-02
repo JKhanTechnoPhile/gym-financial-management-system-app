@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.hiddu.gym.enterprise.config.AppConstants;
 import com.hiddu.gym.enterprise.entities.GymBranch;
 import com.hiddu.gym.enterprise.entities.Role;
 import com.hiddu.gym.enterprise.entities.User;
@@ -118,7 +117,8 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 	
-	private UserDto userToDto(User user) {
+	@Override
+	public UserDto userToDto(User user) {
 		UserDto userDto = this.modelMapper.map(user, UserDto.class);
 		return userDto;
 	}

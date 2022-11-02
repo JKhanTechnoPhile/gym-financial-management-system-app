@@ -2,6 +2,7 @@ package com.hiddu.gym.enterprise.services;
 
 import java.util.List;
 
+import com.hiddu.gym.enterprise.entities.User;
 import com.hiddu.gym.enterprise.payloads.UserDto;
 
 public interface UserService {
@@ -19,4 +20,6 @@ public interface UserService {
 	void deleteUser(Integer userId);
 	
 	List<UserDto> getUsersByGymBranch(String gymCode);
+	
+	UserDto userToDto(User user);
 }
