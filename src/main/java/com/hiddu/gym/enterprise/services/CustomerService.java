@@ -30,4 +30,6 @@ public interface CustomerService {
 	List<CustomerDto> searchCustomers(String keyword);
 	
 	CustomerDto updateCustomerToRegister(CustomerDto customerDto, Integer customerId);
+	
+	List<CustomerDto> geCustomersByGymBranchCode(String gymBranchCode);
 }

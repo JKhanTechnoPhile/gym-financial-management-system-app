@@ -249,6 +249,20 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 	
 	@Override
+	public List<CustomerDto> geCustomersByGymBranchCode(String gymBranchCode) {
+		
+		GymBranch gymBranch = gymBranchRepo.findByGymCode(gymBranchCode);
+		if(gymBranch == null) {
+			throw new ResourceNotFoundException("GymBranch", "gymBranchCode", gymBranchCode);
+		}
+		
+		List<Customer> customers = this.customerRepo.findByGymBranch(gymBranch);
+		List<CustomerDto> customersDtos = customers.stream().map(customer -> this.CustomerToDto(customer)).collect(Collectors.toList());
+		
+		return customersDtos;
+	}
+	
+	@Override
 	public List<CustomerDto> searchCustomers(String keyword) {
 		List<Customer> customers = this.customerRepo.searchByCustomerName(keyword);
 		List<CustomerDto> customersDto = customers.stream().map(customer -> this.CustomerToDto(customer)).collect(Collectors.toList());

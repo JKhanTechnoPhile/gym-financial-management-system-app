@@ -83,6 +83,12 @@ public class CustomerController {
 		return ResponseEntity.ok(this.customerService.getAllCustomers());
 	}
 	
+	//GET-customer get
+	@GetMapping("/gym/{gymCode}")
+	public ResponseEntity<List<CustomerDto>> getAllCustomersByGymBranchCode(@PathVariable String gymCode) {
+		return ResponseEntity.ok(this.customerService.geCustomersByGymBranchCode(gymCode));
+	}
+	
 	//GET-customer by pagination (PageNumber starts with zero)
 	@GetMapping("/pagination")
 	public ResponseEntity<CustomerResponse> getAllCustomersByPagination(
